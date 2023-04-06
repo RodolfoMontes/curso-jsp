@@ -29,8 +29,8 @@ public class DAOUsuarioRepository {
 
 			preparedStatement.execute();
 			connection.commit();
-		}else {
-			String sql = "UPDATE usuario SET login=?, senha=?, nome=?, email=? WHERE id = "+modelLogin.getId()+";";
+		} else {
+			String sql = "UPDATE usuario SET login=?, senha=?, nome=?, email=? WHERE id = " + modelLogin.getId() + ";";
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, modelLogin.getLogin());
 			preparedStatement.setString(2, modelLogin.getSenha());
@@ -42,12 +42,12 @@ public class DAOUsuarioRepository {
 		return this.consultaUsuario(modelLogin.getLogin());
 	}
 
-	public List<ModelLogin> consultaUsuarioList(String nome) throws SQLException{
+	public List<ModelLogin> consultaUsuarioList() throws SQLException {
 		List<ModelLogin> lista = new ArrayList<ModelLogin>();
-		String sql = "select * from usuario where nome ilike '%"+ nome +"%'";
+		String sql = "select * from usuario";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet resultado = preparedStatement.executeQuery();
-		
+
 		while (resultado.next()) {
 			ModelLogin modelLogin = new ModelLogin();
 			modelLogin.setId(resultado.getLong("id"));
@@ -56,10 +56,28 @@ public class DAOUsuarioRepository {
 			modelLogin.setLogin(resultado.getString("login"));
 			lista.add(modelLogin);
 		}
-		
+
 		return lista;
 	}
-	
+
+	public List<ModelLogin> consultaUsuarioList(String nome) throws SQLException {
+		List<ModelLogin> lista = new ArrayList<ModelLogin>(); 
+		String sql = "select * from usuario where nome ilike '%" + nome + "%'";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet resultado = preparedStatement.executeQuery();
+
+		while (resultado.next()) {
+			ModelLogin modelLogin = new ModelLogin();
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setLogin(resultado.getString("login"));
+			lista.add(modelLogin);
+		}
+
+		return lista;
+	}
+
 	public ModelLogin consultaUsuario(String login) throws SQLException {
 
 		ModelLogin modelLogin = new ModelLogin();
@@ -76,11 +94,11 @@ public class DAOUsuarioRepository {
 		}
 		return modelLogin;
 	}
-	
+
 	public ModelLogin consultaUsuarioId(String id) throws SQLException {
 
 		ModelLogin modelLogin = new ModelLogin();
-		String sql = "select * from usuario where id = "+ id;
+		String sql = "select * from usuario where id = " + id;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet resultado = preparedStatement.executeQuery();
 
@@ -101,7 +119,7 @@ public class DAOUsuarioRepository {
 		resultado.next();
 		return resultado.getBoolean("existe");
 	}
-	
+
 	public void deletarUsuario(String idUser) throws SQLException {
 		String sql = "DELETE FROM usuario WHERE id = ? ;";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
