@@ -1,3 +1,4 @@
+<%@page import="model.ModelLogin"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 
@@ -82,6 +83,43 @@
 																<span class="form-bar"></span> <label
 																	class="float-label">E-mail:</label>
 															</div>
+															
+															<div class="form-group form-default form-static-label">
+																<select class="form-control"
+																	aria-label="Default select example" name="perfil">
+																	<option disabled="disabled" selected="selected">[Selecione o Grupo]</option>
+																	<option value="ADMIN" <% 
+																	ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+																	
+																	if( modelLogin !=null  && modelLogin.getPerfil().equals("ADMIN")){
+																		out.print(" ");
+																		out.print("selected=\"selected\"");
+																		out.print(" ");
+																	}%>>Admin</option>
+																	
+																	<option value="SECRETARIA" <% 
+																	modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+																	
+																	if( modelLogin !=null  && modelLogin.getPerfil().equals("SECRETARIA")){
+																		out.print(" ");
+																		out.print("selected=\"selected\"");
+																		out.print(" ");
+																	}%>>Secretária</option>
+																	
+																	<option value="AUXILIAR" <% 
+																	modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+																	
+																	if( modelLogin !=null  && modelLogin.getPerfil().equals("AUXILIAR")){
+																		out.print(" ");
+																		out.print("selected=\"selected\"");
+																		out.print(" ");
+																	}%>>Auxiliar</option>
+																	
+																</select>
+																<span class="form-bar"></span> <label
+																	class="float-label">Perfil:</label>
+															</div>
+															
 															<div class="form-group form-default form-static-label">
 																<input type="password" name="senha" id="senha"
 																	class="form-control" required="required"
@@ -122,7 +160,8 @@
 															<td><c:out value="${ml.id} "></c:out></td>
 															<td><c:out value="${ml.nome} "></c:out></td>
 															<td><c:out value="${ml.id} "></c:out></td>
-															<td><a class="btn btn-success" type="button" href = "<%= request.getContextPath() %>/ServletUsuarioController?acao=buscarEditar&id=${ml.id}" >Ver</a></td>
+															<td><a class="btn btn-success" type="button"
+																href="<%= request.getContextPath() %>/ServletUsuarioController?acao=buscarEditar&id=${ml.id}">Ver</a></td>
 														</tr>
 													</c:forEach>
 												</tbody>
