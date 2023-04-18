@@ -1,20 +1,28 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DAOUsuarioRepository;
 import model.ModelLogin;
 
+@MultipartConfig
 @WebServlet(urlPatterns = { "/ServletUsuarioController" })
 public class ServletUsuarioController extends ServletGenericUtil {
 	private static final long serialVersionUID = 1L;
@@ -90,6 +98,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			String login = request.getParameter("login");
 			String senha = request.getParameter("senha");
 			String perfil = request.getParameter("perfil");
+			String sexo = request.getParameter("sexo");
 
 			ModelLogin modelLogin = new ModelLogin();
 
@@ -99,6 +108,24 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			modelLogin.setLogin(login);
 			modelLogin.setSenha(senha);
 			modelLogin.setPerfil(perfil);
+			modelLogin.setSexo(sexo);
+			
+			if (ServletFileUpload.isMultipartContent(request)) {
+				System.out.println("Entrou");
+				Part part = request.getPart("fileFoto");
+				byte[] foto = null;
+			    String fotoBase64 = null;
+				try (InputStream inputStream = part.getInputStream()) {
+					foto = new byte[(int) part.getSize()];
+					inputStream.read(foto);
+					fotoBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64,"+ Base64.encodeBase64String(foto);
+					modelLogin.setFotousuario(fotoBase64);
+					modelLogin.setExtensaousuario(part.getContentType().split("\\/")[1]);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 
 			if (daoUsuarioRepository.verificarLogin(modelLogin.getLogin()) && modelLogin.getId() == null) {
 				msg = "Já existe usuário com o mesmo login, informe outro login.";

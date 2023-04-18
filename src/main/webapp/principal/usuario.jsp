@@ -47,7 +47,7 @@
 													<div class="card-block">
 														<h4 class="sub-title">Cadastro de usuário</h4>
 
-														<form class="form-material"
+														<form class="form-material" enctype="multipart/form-data"
 															action="<%=request.getContextPath()%>/ServletUsuarioController"
 															method="post" id="formUser">
 
@@ -59,6 +59,20 @@
 																	value="${modelLogin.id}"> <span
 																	class="form-bar"></span> <label class="float-label">ID:</label>
 															</div>
+
+															<div class="form-group form-default input-group mb-4">
+																<div class="input-group-prepend">
+																	<img alt="Imagem User" id="fotobase64" src="  "
+																		width="70px">
+																</div>
+																<input type="file" id="fileFoto" 
+																	name = "fileFoto"
+																	accept="image/*"
+																	onchange="visualizarImg('fotobase64', 'fileFoto');"
+																	class="form-control-file"
+																	style="margin-top: 15px; margin-left: 5px;">
+															</div>
+
 
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="nome" id="nome"
@@ -83,43 +97,43 @@
 																<span class="form-bar"></span> <label
 																	class="float-label">E-mail:</label>
 															</div>
-															
+
 															<div class="form-group form-default form-static-label">
 																<select class="form-control"
 																	aria-label="Default select example" name="perfil">
-																	<option disabled="disabled" selected="selected">[Selecione o Grupo]</option>
-																	<option value="ADMIN" <% 
-																	ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
-																	
-																	if( modelLogin !=null  && modelLogin.getPerfil().equals("ADMIN")){
-																		out.print(" ");
-																		out.print("selected=\"selected\"");
-																		out.print(" ");
-																	}%>>Admin</option>
-																	
-																	<option value="SECRETARIA" <% 
-																	modelLogin = (ModelLogin) request.getAttribute("modelLogin");
-																	
-																	if( modelLogin !=null  && modelLogin.getPerfil().equals("SECRETARIA")){
-																		out.print(" ");
-																		out.print("selected=\"selected\"");
-																		out.print(" ");
-																	}%>>Secretária</option>
-																	
-																	<option value="AUXILIAR" <% 
-																	modelLogin = (ModelLogin) request.getAttribute("modelLogin");
-																	
-																	if( modelLogin !=null  && modelLogin.getPerfil().equals("AUXILIAR")){
-																		out.print(" ");
-																		out.print("selected=\"selected\"");
-																		out.print(" ");
-																	}%>>Auxiliar</option>
-																	
-																</select>
-																<span class="form-bar"></span> <label
+																	<option disabled="disabled" selected="selected">[Selecione
+																		o Grupo]</option>
+																	<option value="ADMIN"
+																		<%ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+
+																		if (modelLogin != null && modelLogin.getPerfil().equals("ADMIN")) {
+																			out.print(" ");
+																			out.print("selected=\"selected\"");
+																			out.print(" ");
+																			}%>>Admin</option>
+
+																	<option value="SECRETARIA"
+																		<%modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+
+																		if (modelLogin != null && modelLogin.getPerfil().equals("SECRETARIA")) {
+																			out.print(" ");
+																			out.print("selected=\"selected\"");
+																			out.print(" ");
+																		}%>>Secretária</option>
+
+																	<option value="AUXILIAR"
+																		<%modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+
+																		if (modelLogin != null && modelLogin.getPerfil().equals("AUXILIAR")) {
+																			out.print(" ");
+																			out.print("selected=\"selected\"");
+																			out.print(" ");
+																		}%>>Auxiliar</option>
+
+																</select> <span class="form-bar"></span> <label
 																	class="float-label">Perfil:</label>
 															</div>
-															
+
 															<div class="form-group form-default form-static-label">
 																<input type="password" name="senha" id="senha"
 																	class="form-control" required="required"
@@ -127,7 +141,25 @@
 																<span class="form-bar"></span> <label
 																	class="float-label">Senha</label>
 															</div>
+															<div class="form-group form-default form-static-label">
+																<input type="radio" name="sexo" , checked="checked"
+																	value="MASCULINO"
+																	<%modelLogin = (ModelLogin) request.getAttribute("modelLogin");
 
+																	if (modelLogin != null && modelLogin.getSexo().equals("MASCULINO")) {
+																		out.print(" ");
+																		out.print("checked=\"checked\"");
+																		out.print(" ");
+																	}%>>Masculino</>
+																<input type="radio" name="sexo" , value="FEMININO"
+																	<%modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+
+																	if (modelLogin != null && modelLogin.getSexo().equals("FEMININO")) {
+																		out.print(" ");
+																		out.print("checked=\"checked\"");
+																		out.print(" ");
+																	}%>>Feminino</>
+															</div>
 															<button type="button"
 																class="btn btn-primary waves-effect waves-light"
 																onclick="limparForm();">Novo</button>
@@ -228,6 +260,22 @@
 	</div>
 
 	<script type="text/javascript">
+		function visualizarImg(fotobase64, fileFoto) {
+			var preview = document.getElementById(fotobase64); // campo IMG html
+			var fileUser = document.getElementById(fileFoto).files[0];
+			var reader = new FileReader();
+
+			reader.onloadend = function() {
+				preview.src = reader.result; /*Carrega a foto na tela*/
+			};
+
+			if (fileUser) {
+				reader.readAsDataURL(fileUser); /*Preview da imagem*/
+			} else {
+				preview.src = '';
+			}
+
+		}
 		function verEditar(id) {
 			var urlAction = document.getElementById("formUser").action;
 			window.location.href = urlAction + '?acao=buscarEditar&id=' + id;
