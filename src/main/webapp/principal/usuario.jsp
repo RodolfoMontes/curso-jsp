@@ -62,8 +62,14 @@
 
 															<div class="form-group form-default input-group mb-4">
 																<div class="input-group-prepend">
-																	<img alt="Imagem User" id="fotobase64" src="  "
+																<c:if test="${modelLogin.fotousuario != '' && modelLogin.fotousuario != null}">
+																	<img alt="Imagem User" id="fotobase64" src="${modelLogin.fotousuario}"
 																		width="70px">
+																</c:if>
+																	<c:if test="${modelLogin.fotousuario == '' || modelLogin.fotousuario == null}">
+																		<img alt="Imagem User"  src="assets\images\faq_man.png"
+																		width="70px">
+																	</c:if>
 																</div>
 																<input type="file" id="fileFoto" 
 																	name = "fileFoto"

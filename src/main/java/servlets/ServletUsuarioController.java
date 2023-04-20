@@ -40,7 +40,12 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				System.out.println(request.getParameter("id"));
 
 				daoUsuarioRepository.deletarUsuario(idUser);
-				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request)); // Esse super vem da classe ServletGenericUtil
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request)); // Esse
+																														// super
+																														// vem
+																														// da
+																														// classe
+																														// ServletGenericUtil
 				request.setAttribute("modelLogins", modelLogins);
 				request.setAttribute("msg", "Excluído com sucesso!");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
@@ -52,7 +57,8 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjax")) {
 				String nomeBusca = request.getParameter("nomeBusca");
 				System.out.println(nomeBusca);
-				List<ModelLogin> dadosUsuario = daoUsuarioRepository.consultaUsuarioList(nomeBusca, super.getUserLogado(request));
+				List<ModelLogin> dadosUsuario = daoUsuarioRepository.consultaUsuarioList(nomeBusca,
+						super.getUserLogado(request));
 				ObjectMapper mapper = new ObjectMapper();
 				String jsonUsuarios = mapper.writeValueAsString(dadosUsuario);
 				response.getWriter().write(jsonUsuarios);
@@ -109,21 +115,24 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			modelLogin.setSenha(senha);
 			modelLogin.setPerfil(perfil);
 			modelLogin.setSexo(sexo);
-			
+
 			if (ServletFileUpload.isMultipartContent(request)) {
 				System.out.println("Entrou");
 				Part part = request.getPart("fileFoto");
-				byte[] foto = null;
-			    String fotoBase64 = null;
-				try (InputStream inputStream = part.getInputStream()) {
-					foto = new byte[(int) part.getSize()];
-					inputStream.read(foto);
-					fotoBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64,"+ Base64.encodeBase64String(foto);
-					modelLogin.setFotousuario(fotoBase64);
-					modelLogin.setExtensaousuario(part.getContentType().split("\\/")[1]);
-				}
-				catch (IOException e) {
-					e.printStackTrace();
+				if (part.getSize() > 0) {
+
+					byte[] foto = null;
+					String fotoBase64 = null;
+					try (InputStream inputStream = part.getInputStream()) {
+						foto = new byte[(int) part.getSize()];
+						inputStream.read(foto);
+						fotoBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64,"
+								+ Base64.encodeBase64String(foto);
+						modelLogin.setFotousuario(fotoBase64);
+						modelLogin.setExtensaousuario(part.getContentType().split("\\/")[1]);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 
