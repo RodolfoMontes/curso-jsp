@@ -94,8 +94,8 @@
 
 
 															<div class="form-group form-default form-static-label">
-																<input onblur="buscaCep();" type="text" name="cep" id="cep"
-																	class="form-control" required="required"
+																<input onblur="buscaCep();" type="text" name="cep"
+																	id="cep" class="form-control" required="required"
 																	value="${modelLogin.cep}" autocomplete="off"> <span
 																	class="form-bar"></span> <label class="float-label">CEP:</label>
 															</div>
@@ -258,6 +258,21 @@ if (modelLogin != null && modelLogin.getSexo().equals("FEMININO")) {
 												</tbody>
 											</table>
 										</div>
+
+										<nav aria-label="Page navigation example">
+											<ul class="pagination">
+											<%
+												int totalPagina = (int) request.getAttribute("totalPagina");
+												for(int i = 0; i < totalPagina; i++){
+													String url = request.getContextPath()+ "/ServletUsuarioController?acao=paginar&pagina=" + (i * 5);
+													out.print("<li class=\"page-item\"><a class=\"page-link\" href=\""+ url +"\">"+ (i + 1) +"</a></li>");
+												}
+											%>
+											
+												
+											</ul>
+										</nav>
+
 									</div>
 									<!-- Page-body end -->
 								</div>
@@ -319,22 +334,22 @@ if (modelLogin != null && modelLogin.getSexo().equals("FEMININO")) {
 	</div>
 
 	<script type="text/javascript">
-	
-	function buscaCep() {
-		var cep = $("#cep").val();
-		
-        //Consulta o webservice viacep.com.br/
-        $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
-        	 if (!("erro" in dados)) {
-                 $("#logradouro").val(dados.logradouro);
-                 $("#bairro").val(dados.bairro);
-                 $("#cidade").val(dados.localidade);
-                 $("#uf").val(dados.uf);
-                 $("#complemento").val(dados.complemento);
-        	 }
-		});
-		
-	}
+		function buscaCep() {
+			var cep = $("#cep").val();
+
+			//Consulta o webservice viacep.com.br/
+			$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?",
+					function(dados) {
+						if (!("erro" in dados)) {
+							$("#logradouro").val(dados.logradouro);
+							$("#bairro").val(dados.bairro);
+							$("#cidade").val(dados.localidade);
+							$("#uf").val(dados.uf);
+							$("#complemento").val(dados.complemento);
+						}
+					});
+
+		}
 		function visualizarImg(fotobase64, fileFoto) {
 			var preview = document.getElementById(fotobase64); // campo IMG html
 			var fileUser = document.getElementById(fileFoto).files[0];

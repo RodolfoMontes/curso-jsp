@@ -80,10 +80,50 @@ public class DAOUsuarioRepository {
 		}
 		return this.consultaUsuario(modelLogin.getLogin(), userLogado);
 	}
+	
+	
+	
+	
+	public List<ModelLogin> consultaUsuarioListPaginado(Long usuarioLogado, Integer offset) throws SQLException {
+		List<ModelLogin> lista = new ArrayList<ModelLogin>();
+		String sql = "select * from usuario where useradmin is false and usuariocadastroid = " + usuarioLogado + "order by nome offset "+ offset +" limit 5;";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet resultado = preparedStatement.executeQuery();
+
+		while (resultado.next()) {
+			ModelLogin modelLogin = new ModelLogin();
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setLogin(resultado.getString("login"));
+			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			lista.add(modelLogin);
+		}
+
+		return lista;
+	}
+	
+    public int totalPagina(Long userLogado) throws SQLException {
+    	String sql = "select count(*) as qtd from usuario where usuariocadastroid =" + userLogado;
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet resultado = preparedStatement.executeQuery();
+		resultado.next();
+		Double total = resultado.getDouble("qtd");
+		Double pagina = total / 5.0;
+		Double resto = pagina % 2;
+		
+		if (resto > 0) {
+			pagina++;
+		}
+		return pagina.intValue();
+    }
+	
+	
 
 	public List<ModelLogin> consultaUsuarioList(Long usuarioLogado) throws SQLException {
 		List<ModelLogin> lista = new ArrayList<ModelLogin>();
-		String sql = "select * from usuario where useradmin is false and usuariocadastroid = " + usuarioLogado;
+		String sql = "select * from usuario where useradmin is false and usuariocadastroid = " + usuarioLogado +" limit 5";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet resultado = preparedStatement.executeQuery();
 
